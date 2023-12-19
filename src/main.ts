@@ -1,23 +1,38 @@
 import diablo from "../resources/diablo3_pose.obj?raw";
-import { Vector3 } from "./math/vector3";
+import { FrameBuffer } from "./framebuffer";
+import { Vector2 } from "./math/ vector2";
+import { barcentric } from "./math/barycentric";
 import { Model } from "./model";
-import { triangle } from "./triangle";
-import { PrimitiveVertexs } from "./type";
+import { Shader } from "./shader";
+import { utils } from "./utils";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-export const isCCW = (p0: Vector3, p1: Vector3, p2: Vector3) => {
-  const area = (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y);
-  return area / 2 > 0;
-}
-
 const main = (model: Model) => {
+  const framebuffer = new FrameBuffer(canvas.width, canvas.height);
+  const shader = new Shader();
+
   model.faces.forEach((face) => {
-    const clip_verts = model.verts(face) as PrimitiveVertexs;
-    if (!isCCW(...clip_verts)) return;
-    triangle(clip_verts, context);
+    const clip_verts = model.verts(face);
+
+    if (!utils.isCCW(...clip_verts)) return;
+
+    const vertexs = utils.transformToScreen(clip_verts, canvas);
+    const boundingbox = utils.createBoundingBox(vertexs);
+
+    for (let x = boundingbox.x; x <= boundingbox.w; x++) {
+      for (let y = boundingbox.y; y <= boundingbox.z; y++) {
+        const point = new Vector2(x, y);
+        const barycenter = barcentric.barycenter(vertexs, point);
+        if (barycenter.x < 0 || barycenter.y < 0 || barycenter.z < 0) continue;
+        const color = shader.fragment();
+        framebuffer.setColor(point, color);
+      }
+    }
   });
+
+  framebuffer.mutateToCanvas(context);
 };
 
 main(new Model(diablo));

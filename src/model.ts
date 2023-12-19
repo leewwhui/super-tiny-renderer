@@ -2,6 +2,7 @@ import { Face } from "obj-file-parser";
 import ObjFileParser from "obj-file-parser";
 import { Vector3 } from "./math/vector3";
 import { Vector2 } from "./math/ vector2";
+import { PrimitiveVertexs } from "./type";
 
 export class Model {
   vertices: Vector3[] = [];
@@ -24,7 +25,7 @@ export class Model {
     return this.vertices[i];
   }
 
-  verts(face: Face) {
+  verts(face: Face): PrimitiveVertexs {
     const [v0, v1, v2] = face.vertices;
     return [
       this.vertices[v0.vertexIndex - 1],
