@@ -1,7 +1,7 @@
 import diablo from "../resources/diablo3_pose.obj?raw";
-import { Vector3 } from "./math/vector3";
 import { Model } from "./model";
 import { Shader } from "./shader";
+import { Triangle } from "./type";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
@@ -10,10 +10,7 @@ const main = (model: Model) => {
   const { faces } = model;
 
   faces.forEach((face) => {
-    const clip_verts = model.verts(face).map((v) => {
-      return shader.vertex(v);
-    }) as [Vector3, Vector3, Vector3];
-
+    const clip_verts = model.verts(face).map(shader.vertex) as Triangle;
     shader.fragment(clip_verts);
   });
 };

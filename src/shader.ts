@@ -1,5 +1,6 @@
 import { Vector3 } from "./math/vector3";
 import { Model } from "./model";
+import { Triangle } from "./type";
 
 export class Shader {
   model: Model;
@@ -24,8 +25,8 @@ export class Shader {
     );
   }
 
-  fragment(vertexs: [Vector3, Vector3, Vector3]) {
-    const [v0, v1, v2] = vertexs;
+  fragment(triangle: Triangle) {
+    const [v0, v1, v2] = triangle;
     const context = this.context;
     context.beginPath();
     context.strokeStyle = 'black';
