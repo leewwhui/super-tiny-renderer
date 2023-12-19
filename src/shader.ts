@@ -28,11 +28,11 @@ export class Shader {
     const [v0, v1, v2] = vertexs;
     const context = this.context;
     context.beginPath();
-    context.fillStyle = 'black';
+    context.strokeStyle = 'black';
     context.moveTo(v0.x, v0.y);
     context.lineTo(v1.x, v1.y);
     context.lineTo(v2.x, v2.y);
     context.closePath();
-    context.fill();
+    context.stroke();
   }
 }
