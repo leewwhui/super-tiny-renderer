@@ -1,22 +1,23 @@
 import diablo from "../resources/diablo3_pose.obj?raw";
-import { Vector3 } from "./math/vector3";
 import { Model } from "./model";
-import { triangle } from "./triangle";
 import { PrimitiveVertexs } from "./type";
+import { utils } from "./utils";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-export const isCCW = (p0: Vector3, p1: Vector3, p2: Vector3) => {
-  const area = (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y);
-  return area / 2 > 0;
-}
-
 const main = (model: Model) => {
   model.faces.forEach((face) => {
     const clip_verts = model.verts(face) as PrimitiveVertexs;
-    if (!isCCW(...clip_verts)) return;
-    triangle(clip_verts, context);
+    if (!utils.isCCW(...clip_verts)) return;
+    const [v0, v1, v2] = utils.transformToScreen(clip_verts, context.canvas);
+    context.beginPath();
+    context.strokeStyle = "black";
+    context.moveTo(v0.x, v0.y);
+    context.lineTo(v1.x, v1.y);
+    context.lineTo(v2.x, v2.y);
+    context.closePath();
+    context.stroke();
   });
 };
 

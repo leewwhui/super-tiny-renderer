@@ -1,6 +1,12 @@
 import { Vector3 } from "./math/vector3";
 import { PrimitiveVertexs } from "./type";
 
+const isCCW = (p0: Vector3, p1: Vector3, p2: Vector3) => {
+  const area = (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y);
+  return area / 2 > 0;
+};
+
+
 const transformToScreen = (
   clip_vertes: PrimitiveVertexs,
   canvas: HTMLCanvasElement
@@ -17,16 +23,4 @@ const transformToScreen = (
   });
 };
 
-export const triangle = (
-  clip_verts: PrimitiveVertexs,
-  context: CanvasRenderingContext2D
-) => {
-  const [v0, v1, v2] = transformToScreen(clip_verts, context.canvas);
-  context.beginPath();
-  context.strokeStyle = "black";
-  context.moveTo(v0.x, v0.y);
-  context.lineTo(v1.x, v1.y);
-  context.lineTo(v2.x, v2.y);
-  context.closePath();
-  context.stroke();
-};
+export const utils = { transformToScreen, isCCW }
