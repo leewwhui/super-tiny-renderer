@@ -29,7 +29,21 @@ const interpolateVector2 = (
   );
 };
 
+const interpolateVector3 = (
+  vectors: [Vector3, Vector3, Vector3],
+  barycenter: Vector3
+) => {
+  const [v0, v1, v2] = vectors;
+
+  return new Vector3(
+    v0.x * barycenter.x + v1.x * barycenter.y + v2.x * barycenter.z,
+    v0.y * barycenter.x + v1.y * barycenter.y + v2.y * barycenter.z,
+    v0.z * barycenter.x + v1.z * barycenter.y + v2.z * barycenter.z
+  );
+};
+
 export const barcentric = {
   barycenter,
-  interpolateVector2
+  interpolateVector2,
+  interpolateVector3,
 };

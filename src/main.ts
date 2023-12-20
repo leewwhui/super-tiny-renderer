@@ -6,12 +6,14 @@ import { Vector2 } from "./math/vector2";
 import { Model } from "./model";
 import { Shader } from "./shader";
 import { utils } from "./utils";
+import { ZBuffer } from "./zBuffer";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 const main = (model: Model) => {
   const framebuffer = new FrameBuffer(canvas.width, canvas.height);
+  const zbuffer = new ZBuffer();
   const shader = new Shader();
 
   model.faces.forEach((face) => {
@@ -30,6 +32,10 @@ const main = (model: Model) => {
         if (barycenter.x < 0 || barycenter.y < 0 || barycenter.z < 0) continue;
 
         const uv = barcentric.interpolateVector2(model.uvs(face), barycenter);
+        const position = barcentric.interpolateVector3(clip_verts, barycenter);
+
+        if (!zbuffer.zTest(point, position.z)) continue;
+        zbuffer.setDeep(point, position.z);
 
         const v2f = { uv };
 
