@@ -1,8 +1,8 @@
 import { Vector3 } from "./math/vector3";
-import { BouondingBox, PrimitiveVertexs } from "./type";
+import { BouondingBox, ThreeVector3 } from "./type";
 
 const transformToScreen = (
-  clip_vertes: PrimitiveVertexs,
+  clip_vertes: ThreeVector3,
   canvas: HTMLCanvasElement
 ) => {
   const width = canvas.width;
@@ -14,10 +14,10 @@ const transformToScreen = (
   return clip_vertes.map((vertex) => {
     const { x, y, z } = vertex;
     return new Vector3(x * h_width + h_width, -y * h_height + h_height, z);
-  }) as PrimitiveVertexs;
+  }) as ThreeVector3;
 };
 
-const createBoundingBox = (positions: PrimitiveVertexs): BouondingBox => {
+const createBoundingBox = (positions: ThreeVector3): BouondingBox => {
   const fromX = Math.min(positions[0].x, positions[1].x, positions[2].x);
   const toX = Math.max(positions[0].x, positions[1].x, positions[2].x);
 

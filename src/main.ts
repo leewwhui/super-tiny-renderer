@@ -1,7 +1,8 @@
 import diablo from "../resources/diablo3_pose.obj?raw";
+import diabloDiffuse from "../resources/diablo3_pose_diffuse.png";
 import { FrameBuffer } from "./framebuffer";
-import { Vector2 } from "./math/ vector2";
 import { barcentric } from "./math/barycentric";
+import { Vector2 } from "./math/vector2";
 import { Model } from "./model";
 import { Shader } from "./shader";
 import { utils } from "./utils";
@@ -25,8 +26,14 @@ const main = (model: Model) => {
       for (let y = boundingbox.y; y <= boundingbox.z; y++) {
         const point = new Vector2(x, y);
         const barycenter = barcentric.barycenter(vertexs, point);
+
         if (barycenter.x < 0 || barycenter.y < 0 || barycenter.z < 0) continue;
-        const color = shader.fragment();
+
+        const uv = barcentric.interpolateVector2(model.uvs(face), barycenter);
+
+        const v2f = { uv };
+
+        const color = shader.fragment(model, v2f);
         framebuffer.setColor(point, color);
       }
     }
@@ -35,4 +42,9 @@ const main = (model: Model) => {
   framebuffer.mutateToCanvas(context);
 };
 
-main(new Model(diablo));
+const diabloTexture = new Image();
+diabloTexture.src = diabloDiffuse;
+
+diabloTexture.onload = (e) => {
+  main(new Model(diablo, e.target as HTMLImageElement));
+};

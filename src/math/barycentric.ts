@@ -1,8 +1,8 @@
-import { PrimitiveVertexs } from "../type";
-import { Vector2 } from "./ vector2";
+import { ThreeVector3 } from "../type";
+import { Vector2 } from "./vector2";
 import { Vector3 } from "./vector3";
 
-const barycenter = (vertexs: PrimitiveVertexs, point: Vector2) => {
+const barycenter = (vertexs: ThreeVector3, point: Vector2) => {
   const [va, vb, vc] = vertexs;
   const a =
     (-(point.x - vb.x) * (vc.y - vb.y) + (point.y - vb.y) * (vc.x - vb.x)) /
