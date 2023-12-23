@@ -1,5 +1,5 @@
 import { Vector2 } from "./math/vector2";
-import { Vector4 } from "./math/vector4";
+import { Vector3 } from "./math/vector3";
 
 export const sample2D = (diffuse: ImageData, uv: Vector2) => {
   const { x: u, y: v } = uv;
@@ -10,5 +10,5 @@ export const sample2D = (diffuse: ImageData, uv: Vector2) => {
   const i = (y * w + x) * 4;
   const data = diffuse.data;
 
-  return new Vector4(data[i], data[i + 1], data[i + 2], data[i + 3]);
+  return new Vector3(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255);
 };

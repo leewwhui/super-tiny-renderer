@@ -31,13 +31,15 @@ const main = (model: Model) => {
 
         if (barycenter.x < 0 || barycenter.y < 0 || barycenter.z < 0) continue;
 
-        const uv = barcentric.interpolateVector2(model.uvs(face), barycenter);
         const position = barcentric.interpolateVector3(clip_verts, barycenter);
 
         if (!zbuffer.zTest(point, position.z)) continue;
         zbuffer.setDeep(point, position.z);
 
-        const v2f = { uv };
+        const uv = barcentric.interpolateVector2(model.uvs(face), barycenter);
+        const normal = barcentric.interpolateVector3(model.normals(face), barycenter);
+
+        const v2f = { uv, normal };
 
         const color = shader.fragment(model, v2f);
         framebuffer.setColor(point, color);

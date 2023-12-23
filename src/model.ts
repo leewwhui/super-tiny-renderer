@@ -8,6 +8,7 @@ export class Model {
   vertices: Vector3[] = [];
   faces: Face[] = [];
   textures: Vector2[] = [];
+  vertexNormals: Vector3[] = [];
 
   diffuseMap: ImageData;
 
@@ -16,9 +17,11 @@ export class Model {
     const output = parser.parse();
 
     if (output.models[0]) {
-      const { vertices, faces, textureCoords } = output.models[0];
+      const { vertices, faces, textureCoords, vertexNormals } =
+        output.models[0];
       this.vertices = vertices.map((v) => new Vector3(v.x, v.y, v.z));
       this.textures = textureCoords.map((t) => new Vector2(t.u, t.v));
+      this.vertexNormals = vertexNormals.map((n) => new Vector3(n.x, n.y, n.z));
       this.faces = faces;
     }
 
@@ -49,6 +52,15 @@ export class Model {
       this.textures[v0.textureCoordsIndex - 1],
       this.textures[v1.textureCoordsIndex - 1],
       this.textures[v2.textureCoordsIndex - 1],
+    ];
+  }
+
+  normals(face: Face): ThreeVector3 {
+    const [v0, v1, v2] = face.vertices;
+    return [
+      this.vertexNormals[v0.vertexNormalIndex - 1],
+      this.vertexNormals[v1.vertexNormalIndex - 1],
+      this.vertexNormals[v2.vertexNormalIndex - 1],
     ];
   }
 }
