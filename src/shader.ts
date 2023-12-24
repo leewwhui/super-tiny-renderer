@@ -31,7 +31,7 @@ export class Shader {
     const diffuse = LIGHT_COLOR.mul(this.saturate(dot(worldLightDir, normal)));
 
     const specular = LIGHT_COLOR.mul(
-      Math.pow(this.saturate(dot(normal, this.reflect(eye, worldLightDir))), 10)
+      Math.pow(this.saturate(dot(normal, this.reflect(eye, worldLightDir))), 20)
     );
 
     const color = texture_color

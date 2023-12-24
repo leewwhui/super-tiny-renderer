@@ -1,5 +1,6 @@
 import diablo from "../resources/diablo3_pose.obj?raw";
 import diabloDiffuse from "../resources/diablo3_pose_diffuse.png";
+import diabloNomal from "../resources/diablo3-pose-nm.png";
 import { FrameBuffer } from "./framebuffer";
 import { barcentric } from "./math/barycentric";
 import { Vector2 } from "./math/vector2";
@@ -7,6 +8,8 @@ import { Model } from "./model";
 import { Shader } from "./shader";
 import { utils } from "./utils";
 import { ZBuffer } from "./zBuffer";
+import { imageLoader } from "./imageLoader";
+import { sample2D } from "./sample";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -37,7 +40,7 @@ const main = (model: Model) => {
         zbuffer.setDeep(point, position.z);
 
         const uv = barcentric.interpolateVector2(model.uvs(face), barycenter);
-        const normal = barcentric.interpolateVector3(model.normals(face), barycenter);
+        const normal = sample2D(model.normalMap, uv).mul(2).sub(1);
 
         const v2f = { uv, normal };
 
@@ -50,9 +53,14 @@ const main = (model: Model) => {
   framebuffer.mutateToCanvas(context);
 };
 
-const diabloTexture = new Image();
-diabloTexture.src = diabloDiffuse;
+imageLoader([
+  { key: "diablo", src: diabloDiffuse },
+  { key: "diablo_normal", src: diabloNomal },
+]).then((val) => {
+  //@ts-ignore
+  const diabloImage = val["diablo"];
+  //@ts-ignore
+  const diabloNormalImage = val["diablo_normal"];
 
-diabloTexture.onload = (e) => {
-  main(new Model(diablo, e.target as HTMLImageElement));
-};
+  main(new Model(diablo, diabloImage, diabloNormalImage));
+});

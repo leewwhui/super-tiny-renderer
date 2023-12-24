@@ -11,8 +11,9 @@ export class Model {
   vertexNormals: Vector3[] = [];
 
   diffuseMap: ImageData;
+  normalMap: ImageData;
 
-  constructor(content: string, diffuseMap: HTMLImageElement) {
+  constructor(content: string, diffuseMap: HTMLImageElement, normalMap: HTMLImageElement) {
     const parser = new ObjFileParser(content);
     const output = parser.parse();
 
@@ -25,12 +26,17 @@ export class Model {
       this.faces = faces;
     }
 
+    this.diffuseMap = this.loadImageData(diffuseMap);
+    this.normalMap = this.loadImageData(normalMap);
+  }
+
+  private loadImageData(image: HTMLImageElement) {
     const canvas = document.createElement("canvas");
-    canvas.width = diffuseMap.width;
-    canvas.height = diffuseMap.height;
+    canvas.width = image.width;
+    canvas.height = image.height;
     const context = canvas.getContext("2d")!;
-    context.drawImage(diffuseMap, 0, 0, canvas.width, canvas.height);
-    this.diffuseMap = context.getImageData(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    return context.getImageData(0, 0, canvas.width, canvas.height);
   }
 
   vert(i: number) {
